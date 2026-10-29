@@ -1,0 +1,8 @@
+[project]
+name = "workout-form-coach"
+version = "0.1.0"
+description = "An in-progress squat counting and form analysis project"
+requires-python = ">=3.9"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
