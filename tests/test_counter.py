@@ -56,6 +56,20 @@ class SquatCounterTests(unittest.TestCase):
         self.assertEqual(update.phase, Phase.STANDING)
         self.assertEqual(update.reps, 0)
 
+    def test_threshold_boundaries_and_exact_visibility_cutoff(self):
+        counter = SquatCounter()
+        self.assertEqual(
+            counter.update(159.9, visibility=0.6).phase, Phase.DESCENDING
+        )
+        self.assertEqual(counter.update(100.0).phase, Phase.ASCENDING)
+        completion = counter.update(160.0)
+        self.assertTrue(completion.counted)
+        self.assertEqual(completion.reps, 1)
+
+        rejected = SquatCounter().update(159.9, visibility=0.59)
+        self.assertFalse(rejected.accepted)
+        self.assertEqual(rejected.phase, Phase.STANDING)
+
     def test_invalid_configuration_and_observations_raise(self):
         with self.assertRaises(ValueError):
             SquatCounter(bottom_threshold=160.0, standing_threshold=160.0)
