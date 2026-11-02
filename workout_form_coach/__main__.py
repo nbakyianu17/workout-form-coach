@@ -48,6 +48,14 @@ def main(argv=None):
             missed_frames, total_frames, missed_rate
         )
     )
+    print(
+        "Thresholds: standing >= {:.1f} deg, bottom <= {:.1f} deg, "
+        "visibility >= {:.2f}".format(
+            args.standing_threshold,
+            args.bottom_threshold,
+            args.min_visibility,
+        )
+    )
     print("Wrote per-clip metrics to {}".format(args.output))
     return 0
 

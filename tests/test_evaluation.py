@@ -146,6 +146,12 @@ class EvaluationTests(unittest.TestCase):
                     str(manifest),
                     "--output",
                     str(report),
+                    "--standing-threshold",
+                    "155",
+                    "--bottom-threshold",
+                    "95",
+                    "--min-visibility",
+                    "0.75",
                 ],
                 cwd=str(project_root),
                 capture_output=True,
@@ -157,6 +163,11 @@ class EvaluationTests(unittest.TestCase):
         self.assertEqual(completed.returncode, 0, completed.stderr)
         self.assertIn("does not include video-model inference", completed.stdout)
         self.assertIn("Missed detections: 1/4 (25.00%)", completed.stdout)
+        self.assertIn(
+            "Thresholds: standing >= 155.0 deg, bottom <= 95.0 deg, "
+            "visibility >= 0.75",
+            completed.stdout,
+        )
         self.assertTrue(report_exists)
 
     def test_manifest_rejects_duplicate_ids_and_bad_ground_truth(self):
