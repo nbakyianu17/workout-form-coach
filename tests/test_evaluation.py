@@ -170,6 +170,21 @@ class EvaluationTests(unittest.TestCase):
         )
         self.assertTrue(report_exists)
 
+    def test_cli_help_explains_threshold_options(self):
+        project_root = Path(__file__).resolve().parents[1]
+        completed = subprocess.run(
+            [sys.executable, "-m", "workout_form_coach", "evaluate", "--help"],
+            cwd=str(project_root),
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        self.assertIn("knee angle that completes a rep", completed.stdout)
+        self.assertIn("deep squat", completed.stdout)
+        self.assertIn("landmark visibility", completed.stdout)
+
     def test_manifest_rejects_duplicate_ids_and_bad_ground_truth(self):
         with tempfile.TemporaryDirectory() as temporary:
             directory = Path(temporary)

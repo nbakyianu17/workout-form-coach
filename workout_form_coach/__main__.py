@@ -15,9 +15,24 @@ def main(argv=None):
     )
     evaluate.add_argument("--manifest", required=True, type=Path)
     evaluate.add_argument("--output", required=True, type=Path)
-    evaluate.add_argument("--standing-threshold", type=float, default=160.0)
-    evaluate.add_argument("--bottom-threshold", type=float, default=100.0)
-    evaluate.add_argument("--min-visibility", type=float, default=0.6)
+    evaluate.add_argument(
+        "--standing-threshold",
+        type=float,
+        default=160.0,
+        help="knee angle that completes a rep (degrees; default: 160)",
+    )
+    evaluate.add_argument(
+        "--bottom-threshold",
+        type=float,
+        default=100.0,
+        help="maximum knee angle considered a deep squat (degrees; default: 100)",
+    )
+    evaluate.add_argument(
+        "--min-visibility",
+        type=float,
+        default=0.6,
+        help="minimum landmark visibility accepted (0-1; default: 0.6)",
+    )
 
     args = parser.parse_args(argv)
     try:
