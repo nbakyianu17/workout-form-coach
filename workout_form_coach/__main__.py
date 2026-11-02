@@ -34,10 +34,18 @@ def main(argv=None):
 
     total_error = sum(item.absolute_rep_error for item in metrics)
     mean_absolute_error = total_error / len(metrics)
+    total_frames = sum(item.frames for item in metrics)
+    missed_frames = sum(item.missed_detection_frames for item in metrics)
+    missed_rate = missed_frames / total_frames
     print(
         "Evaluated {} clips; mean absolute rep-count error: {:.2f}. "
         "CSV replay throughput does not include video-model inference.".format(
             len(metrics), mean_absolute_error
+        )
+    )
+    print(
+        "Missed detections: {}/{} ({:.2%})".format(
+            missed_frames, total_frames, missed_rate
         )
     )
     print("Wrote per-clip metrics to {}".format(args.output))

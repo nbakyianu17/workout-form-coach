@@ -113,8 +113,12 @@ class EvaluationTests(unittest.TestCase):
             self.write_pose_csv(
                 directory,
                 "clip.csv",
-                [pose_row(0, 175), pose_row(1, 145), pose_row(2, 95),
-                 pose_row(3, 170)],
+                [
+                    pose_row(0, 175),
+                    pose_row(1, 145),
+                    pose_row(2, None, visibility=0.2),
+                    pose_row(3, 170),
+                ],
             )
             manifest = directory / "manifest.csv"
             with manifest.open("w", newline="", encoding="utf-8") as target:
@@ -152,6 +156,7 @@ class EvaluationTests(unittest.TestCase):
 
         self.assertEqual(completed.returncode, 0, completed.stderr)
         self.assertIn("does not include video-model inference", completed.stdout)
+        self.assertIn("Missed detections: 1/4 (25.00%)", completed.stdout)
         self.assertTrue(report_exists)
 
     def test_manifest_rejects_duplicate_ids_and_bad_ground_truth(self):
