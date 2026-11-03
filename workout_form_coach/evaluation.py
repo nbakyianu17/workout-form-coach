@@ -69,6 +69,8 @@ def evaluate_clip(
     bottom_threshold: float = 100.0,
     min_visibility: float = 0.6,
 ) -> ClipMetrics:
+    if not isinstance(ground_truth_reps, int) or isinstance(ground_truth_reps, bool):
+        raise ValueError("ground-truth reps must be an integer")
     if ground_truth_reps < 0:
         raise ValueError("ground-truth reps must be non-negative")
 

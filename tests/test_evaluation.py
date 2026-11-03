@@ -224,6 +224,20 @@ class EvaluationTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "contiguous"):
                 evaluate_clip("bad-clip", pose_path, ground_truth_reps=0)
 
+    def test_clip_rejects_non_integer_ground_truth(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            pose_path = self.write_pose_csv(
+                Path(temporary), "clip.csv", [pose_row(0, 170)]
+            )
+            for ground_truth in (1.5, True):
+                with self.subTest(ground_truth=ground_truth):
+                    with self.assertRaisesRegex(ValueError, "must be an integer"):
+                        evaluate_clip(
+                            "bad-ground-truth",
+                            pose_path,
+                            ground_truth_reps=ground_truth,
+                        )
+
 
 if __name__ == "__main__":
     unittest.main()
