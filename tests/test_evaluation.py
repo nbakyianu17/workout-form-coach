@@ -163,6 +163,7 @@ class EvaluationTests(unittest.TestCase):
         self.assertEqual(completed.returncode, 0, completed.stderr)
         self.assertIn("does not include video-model inference", completed.stdout)
         self.assertIn("Exact-count clips: 0/1 (0.00%)", completed.stdout)
+        self.assertIn("Rep totals: predicted 0, labeled 1", completed.stdout)
         self.assertIn("Missed detections: 1/4 (25.00%)", completed.stdout)
         self.assertIn(
             "Thresholds: standing >= 155.0 deg, bottom <= 95.0 deg, "

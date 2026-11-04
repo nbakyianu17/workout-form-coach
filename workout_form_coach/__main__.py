@@ -51,6 +51,8 @@ def main(argv=None):
     mean_absolute_error = total_error / len(metrics)
     exact_count_clips = sum(item.absolute_rep_error == 0 for item in metrics)
     exact_count_rate = exact_count_clips / len(metrics)
+    predicted_reps = sum(item.predicted_reps for item in metrics)
+    ground_truth_reps = sum(item.ground_truth_reps for item in metrics)
     total_frames = sum(item.frames for item in metrics)
     missed_frames = sum(item.missed_detection_frames for item in metrics)
     missed_rate = missed_frames / total_frames
@@ -63,6 +65,11 @@ def main(argv=None):
     print(
         "Exact-count clips: {}/{} ({:.2%})".format(
             exact_count_clips, len(metrics), exact_count_rate
+        )
+    )
+    print(
+        "Rep totals: predicted {}, labeled {}".format(
+            predicted_reps, ground_truth_reps
         )
     )
     print(
