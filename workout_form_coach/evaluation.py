@@ -28,6 +28,7 @@ class ClipMetrics:
     frames: int
     predicted_reps: int
     ground_truth_reps: int
+    signed_rep_error: int
     absolute_rep_error: int
     missed_detection_frames: int
     missed_detection_rate: float
@@ -129,6 +130,7 @@ def evaluate_clip(
         frames=frames,
         predicted_reps=predicted_reps,
         ground_truth_reps=ground_truth_reps,
+        signed_rep_error=predicted_reps - ground_truth_reps,
         absolute_rep_error=abs(predicted_reps - ground_truth_reps),
         missed_detection_frames=missed_detection_frames,
         missed_detection_rate=missed_rate,
@@ -197,6 +199,7 @@ def write_report(metrics: Iterable[ClipMetrics], output_path: Path) -> None:
                 "frames",
                 "predicted_reps",
                 "ground_truth_reps",
+                "signed_rep_error",
                 "absolute_rep_error",
                 "missed_detection_frames",
                 "missed_detection_rate",
@@ -211,6 +214,7 @@ def write_report(metrics: Iterable[ClipMetrics], output_path: Path) -> None:
                     "frames": item.frames,
                     "predicted_reps": item.predicted_reps,
                     "ground_truth_reps": item.ground_truth_reps,
+                    "signed_rep_error": item.signed_rep_error,
                     "absolute_rep_error": item.absolute_rep_error,
                     "missed_detection_frames": item.missed_detection_frames,
                     "missed_detection_rate": "{:.6f}".format(

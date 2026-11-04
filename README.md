@@ -63,6 +63,7 @@ python3 -m workout_form_coach evaluate \
 The command prints the mean absolute rep-count error, the share of clips with
 an exact rep count, aggregate predicted and labeled rep totals, and the
 missed-detection count/rate across all evaluated frames. The CSV report
-retains the per-clip metrics for closer inspection. The summary also echoes
-the thresholds used for that run, making experiments with different cutoffs
-easier to compare.
+retains the per-clip metrics for closer inspection, including signed rep-count
+error (positive means over-counted; negative means under-counted). The summary
+also echoes the thresholds used for that run, making experiments with different
+cutoffs easier to compare.

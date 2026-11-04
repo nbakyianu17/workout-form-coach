@@ -91,7 +91,7 @@ class EvaluationTests(unittest.TestCase):
                     {
                         "clip_id": "clip-01",
                         "observations_csv": "clip.csv",
-                        "ground_truth_reps": "1",
+                        "ground_truth_reps": "0",
                     }
                 )
             report = directory / "reports" / "metrics.csv"
@@ -104,8 +104,23 @@ class EvaluationTests(unittest.TestCase):
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0]["clip_id"], "clip-01")
         self.assertEqual(rows[0]["predicted_reps"], "1")
-        self.assertEqual(rows[0]["absolute_rep_error"], "0")
+        self.assertEqual(rows[0]["signed_rep_error"], "1")
+        self.assertEqual(rows[0]["absolute_rep_error"], "1")
         self.assertIn("processing_fps", rows[0])
+
+    def test_signed_rep_error_shows_over_and_undercount_direction(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            pose_path = self.write_pose_csv(
+                Path(temporary),
+                "clip.csv",
+                [pose_row(0, 175), pose_row(1, 145), pose_row(2, 95),
+                 pose_row(3, 170)],
+            )
+            overcount = evaluate_clip("overcount", pose_path, ground_truth_reps=0)
+            undercount = evaluate_clip("undercount", pose_path, ground_truth_reps=2)
+
+        self.assertEqual(overcount.signed_rep_error, 1)
+        self.assertEqual(undercount.signed_rep_error, -1)
 
     def test_cli_writes_report_and_labels_its_throughput_scope(self):
         with tempfile.TemporaryDirectory() as temporary:
