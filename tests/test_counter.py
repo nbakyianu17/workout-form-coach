@@ -70,11 +70,38 @@ class SquatCounterTests(unittest.TestCase):
         self.assertFalse(rejected.accepted)
         self.assertEqual(rejected.phase, Phase.STANDING)
 
+    def test_transition_confirmation_ignores_single_frame_spikes(self):
+        counter = SquatCounter(transition_frames=2)
+        self.assertEqual(counter.update(95.0).phase, Phase.STANDING)
+        self.assertEqual(counter.update(170.0).phase, Phase.STANDING)
+        self.assertEqual(counter.reps, 0)
+
+        counter.update(145.0)
+        self.assertEqual(counter.update(145.0).phase, Phase.DESCENDING)
+        counter.update(95.0)
+        self.assertEqual(counter.update(95.0).phase, Phase.ASCENDING)
+        counter.update(170.0)
+        completion = counter.update(170.0)
+        self.assertTrue(completion.counted)
+        self.assertEqual(completion.reps, 1)
+
+    def test_unreliable_frame_breaks_transition_streak(self):
+        counter = SquatCounter(transition_frames=2)
+        counter.update(145.0)
+        missed = counter.update(None)
+        self.assertFalse(missed.accepted)
+        self.assertEqual(counter.update(145.0).phase, Phase.STANDING)
+        self.assertEqual(counter.update(145.0).phase, Phase.DESCENDING)
+
     def test_invalid_configuration_and_observations_raise(self):
         with self.assertRaises(ValueError):
             SquatCounter(bottom_threshold=160.0, standing_threshold=160.0)
         with self.assertRaises(ValueError):
             SquatCounter(min_visibility=1.1)
+        with self.assertRaises(ValueError):
+            SquatCounter(transition_frames=0)
+        with self.assertRaises(ValueError):
+            SquatCounter(transition_frames=1.5)
         counter = SquatCounter()
         with self.assertRaises(ValueError):
             counter.update(181.0)

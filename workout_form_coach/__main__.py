@@ -33,6 +33,12 @@ def main(argv=None):
         default=0.6,
         help="minimum landmark visibility accepted (0-1; default: 0.6)",
     )
+    evaluate.add_argument(
+        "--transition-frames",
+        type=int,
+        default=1,
+        help="consecutive valid frames required to change phase (default: 1)",
+    )
 
     args = parser.parse_args(argv)
     try:
@@ -41,6 +47,7 @@ def main(argv=None):
             standing_threshold=args.standing_threshold,
             bottom_threshold=args.bottom_threshold,
             min_visibility=args.min_visibility,
+            transition_frames=args.transition_frames,
         )
         write_report(metrics, args.output)
     except (OSError, ValueError) as error:
@@ -85,6 +92,9 @@ def main(argv=None):
             args.min_visibility,
         )
     )
+    print("Transition confirmation: {} consecutive frame(s)".format(
+        args.transition_frames
+    ))
     print("Wrote per-clip metrics to {}".format(args.output))
     return 0
 

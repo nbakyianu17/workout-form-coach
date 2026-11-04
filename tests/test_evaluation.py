@@ -167,6 +167,8 @@ class EvaluationTests(unittest.TestCase):
                     "95",
                     "--min-visibility",
                     "0.75",
+                    "--transition-frames",
+                    "2",
                 ],
                 cwd=str(project_root),
                 capture_output=True,
@@ -185,6 +187,7 @@ class EvaluationTests(unittest.TestCase):
             "visibility >= 0.75",
             completed.stdout,
         )
+        self.assertIn("Transition confirmation: 2 consecutive frame(s)", completed.stdout)
         self.assertTrue(report_exists)
 
     def test_cli_help_explains_threshold_options(self):
@@ -201,6 +204,32 @@ class EvaluationTests(unittest.TestCase):
         self.assertIn("knee angle that completes a rep", completed.stdout)
         self.assertIn("deep squat", completed.stdout)
         self.assertIn("landmark visibility", completed.stdout)
+        self.assertIn("consecutive valid frames", completed.stdout)
+
+    def test_evaluate_clip_can_require_stable_phase_transitions(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            pose_path = self.write_pose_csv(
+                Path(temporary),
+                "clip.csv",
+                [
+                    pose_row(0, 175),
+                    pose_row(1, 145),
+                    pose_row(2, 145),
+                    pose_row(3, 95),
+                    pose_row(4, 95),
+                    pose_row(5, 170),
+                    pose_row(6, 170),
+                ],
+            )
+            metrics = evaluate_clip(
+                "stable-clip",
+                pose_path,
+                ground_truth_reps=1,
+                transition_frames=2,
+            )
+
+        self.assertEqual(metrics.predicted_reps, 1)
+        self.assertEqual(metrics.absolute_rep_error, 0)
 
     def test_manifest_rejects_duplicate_ids_and_bad_ground_truth(self):
         with tempfile.TemporaryDirectory() as temporary:

@@ -10,8 +10,10 @@ analyze video or claim accuracy results.
 counter (standing, descending, ascending) that ignores missing or low-
 visibility observations; plus a CSV replay evaluator that compares predicted
 rep counts to labeled counts and reports missed detections and CSV-processing
-throughput. Unit tests cover angle geometry, full and partial movement cycles,
-confidence filtering, invalid input, and per-clip report output.
+throughput. The counter can optionally require consecutive valid frames before
+phase changes to reduce sensitivity to brief pose-estimation spikes. Unit tests
+cover angle geometry, full and partial movement cycles, confidence filtering,
+invalid input, and per-clip report output.
 
 **Not implemented yet:** person detection or cropping, MediaPipe pose
 estimation, video ingestion, annotated output, or evaluation on real labeled
@@ -31,7 +33,17 @@ python3 -m unittest discover -s tests -v
 The counter accepts a knee angle in degrees and a visibility score per frame.
 It counts a rep only after the observed angle moves below the configured
 bottom threshold and later returns above the standing threshold. This
-threshold-based prototype is not a medical or coaching assessment.
+threshold-based prototype is not a medical or coaching assessment. To make
+phase changes less sensitive to brief pose-estimation spikes, set
+`--transition-frames` to require consecutive valid frames before changing
+phase. Its default of `1` preserves immediate transitions.
+
+```sh
+python3 -m workout_form_coach evaluate \
+  --manifest dataset/manifest.csv \
+  --output reports/evaluation.csv \
+  --transition-frames 3
+```
 
 ## Replay labeled pose observations
 

@@ -69,6 +69,7 @@ def evaluate_clip(
     standing_threshold: float = 160.0,
     bottom_threshold: float = 100.0,
     min_visibility: float = 0.6,
+    transition_frames: int = 1,
 ) -> ClipMetrics:
     if not isinstance(ground_truth_reps, int) or isinstance(ground_truth_reps, bool):
         raise ValueError("ground-truth reps must be an integer")
@@ -79,6 +80,7 @@ def evaluate_clip(
         standing_threshold=standing_threshold,
         bottom_threshold=bottom_threshold,
         min_visibility=min_visibility,
+        transition_frames=transition_frames,
     )
     frames = 0
     missed_detection_frames = 0
@@ -143,6 +145,7 @@ def evaluate_manifest(
     standing_threshold: float = 160.0,
     bottom_threshold: float = 100.0,
     min_visibility: float = 0.6,
+    transition_frames: int = 1,
 ) -> List[ClipMetrics]:
     results: List[ClipMetrics] = []
     seen_clip_ids = set()
@@ -182,6 +185,7 @@ def evaluate_manifest(
                     standing_threshold=standing_threshold,
                     bottom_threshold=bottom_threshold,
                     min_visibility=min_visibility,
+                    transition_frames=transition_frames,
                 )
             )
     if not results:
